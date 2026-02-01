@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>タップ収穫ラン</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="game-container">
+
+        <!-- Start Screen -->
+        <div id="start-screen">
+            <button id="sound-toggle" class="btn-icon" aria-label="Toggle Sound">🔊</button>
+
+            <h1>タップ収穫ラン</h1>
+
+            <div id="user-stats" class="hidden">
+                <div class="user-info-row">
+                    <span class="user-name-disp">GUEST</span>
+                    <span class="user-lv-disp">Lv.1</span>
+                </div>
+                <div class="total-score-row">
+                    Total Score: <span id="total-score-disp">0</span>
+                </div>
+                <div class="hoe-level-row">
+                    My クワ: <span id="common-hoe-disp" class="hoe-highlight">Lv.1</span>
+                </div>
+            </div>
+
+            <div id="change-user-area" class="hidden">
+                <button id="change-user-button" class="btn-secondary btn-small">CHANGE NAME</button>
+                <p id="switch-notice" class="switch-note">名前を変更するとレベルがリセットされます。</p>
+            </div>
+
+            <div id="change-confirm" class="hidden">
+                <div class="confirm-card">
+                    <p class="confirm-text">本当に名前を変更しますか？<br>レベルはリセットされます。</p>
+                    <div class="confirm-actions">
+                        <button id="confirm-change-yes" class="btn-secondary btn-small">OK</button>
+                        <button id="confirm-change-no" class="btn-secondary btn-small btn-ghost">NO</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="login-area">
+                <input type="text" id="username-input" placeholder="名前を入力 (必須)" maxlength="10">
+                <p class="error-msg hidden" id="login-error">名前を入力してください！</p>
+                <div class="save-notice">※データはブラウザに保存されます</div>
+            </div>
+
+            <div id="mode-select-area" class="hidden">
+                <p class="instruction">難易度を選択</p>
+                <div class="difficulty-select">
+                    <button class="btn-diff easy" data-mode="easy">
+                        EASY <br><span class="hoe-badge">推奨Lv1</span>
+                    </button>
+                    <button class="btn-diff normal" data-mode="normal">
+                        NORMAL <br><span class="hoe-badge">推奨Lv2</span>
+                    </button>
+                    <button class="btn-diff hard" data-mode="hard">
+                        HARD <br><span class="hoe-badge">推奨Lv3</span>
+                    </button>
+                </div>
+
+                <p class="instruction">無限に収穫！</p>
+                <div class="difficulty-select">
+                    <button class="btn-diff endless" data-mode="endless">
+                        ENDLESS <br><span class="hoe-badge">スコアアタック</span>
+                    </button>
+                </div>
+
+                <p class="instruction pc-only-hint">PCならスペースキー連打で収穫！<br>(クリック連打は無効です)</p>
+            </div>
+        </div>
+
+        <!-- Header / Stats -->
+        <header id="game-header" class="hidden">
+            <div class="score-board">
+                <span class="label">HARVEST</span>
+                <span id="harvest-counter">0</span>
+            </div>
+            <div class="score-board">
+                <span class="label">SCORE</span>
+                <span id="score-display">0</span>
+            </div>
+            <div class="timer-board">
+                <span class="label" id="timer-label">TIME</span>
+                <span id="timer-display">0.00</span>
+            </div>
+        </header>
+
+        <!-- Main Field Area -->
+        <main id="field-area" class="hidden">
+            <div id="combo-container" class="hidden">
+                <span id="combo-count">0</span>
+                <span class="combo-label">COMBO!</span>
+            </div>
+
+            <div id="crop-display">
+                <div class="crop-sprout hidden">🌱</div>
+                <div class="crop-mature">🍎</div>
+            </div>
+
+            <!-- Gauge -->
+            <div id="gauge-container">
+                <div id="gauge-bar"></div>
+            </div>
+
+            <div id="pc-key-guide" class="hidden">Space Key</div>
+
+            <!-- Feedback Messages -->
+            <div id="feedback-layer"></div>
+        </main>
+
+        <!-- Interaction Area -->
+        <footer id="interaction-area" class="hidden">
+            <button id="action-button" class="harvesting">
+                <span class="btn-text">連打ァ!!!</span>
+                <div class="btn-ripple"></div>
+            </button>
+            <button id="stop-button" class="hidden">作業をやめる</button>
+        </footer>
+
+        <!-- Result Overlay -->
+        <div id="result-overlay" class="hidden">
+            <div class="result-card">
+                <h2 id="result-title">RESULT</h2>
+
+                <div class="result-row">
+                    <span class="label">SCORE</span>
+                    <span id="final-score">0</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">HARVEST</span>
+                    <span id="final-harvest">0</span>
+                </div>
+
+                <div id="levelup-message" class="hidden">
+                    🎉 クワ LvUP! <span id="new-hoe-level">2</span> 🎉
+                    <br><span class="sub-text">収穫スピードUP!</span>
+                </div>
+
+                <div id="player-levelup-message" class="hidden">
+                    🆙 プレイヤー LvUP! <span id="new-player-level">10</span> 🆙
+                </div>
+
+                <div id="fail-message" class="hidden">
+                    目標未達成...<br>
+                </div>
+
+                <!-- Ranking Area (Endless Only) -->
+                <div id="ranking-area" class="hidden">
+                    <h3>🏆 ENDLESS RANKING 🏆</h3>
+                    <div id="ranking-list">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+                <button id="retry-button" class="btn-secondary">タイトルへ</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
